@@ -1,0 +1,20 @@
+{% extends 'mainvista/base.html' %}
+{% block content %}
+<h2>Menú SunSet</h2>
+<div class="row">
+    {% for platillo in platillos %}
+    <div class="col-md-4 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">{{ platillo.nombre }}</h5>
+                <p class="card-text">{{ platillo.descripcion }}</p>
+                <p class="fw-bold">${{ platillo.precio }}</p>
+                <span class="badge bg-secondary">{{ platillo.get_categoria_display }}</span>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <p>No hay platillos disponibles todavía. Agrégalos desde el panel de admin.</p>
+    {% endfor %}
+</div>
+{% endblock %}

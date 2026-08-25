@@ -1,0 +1,30 @@
+{% extends 'mainvista/base.html' %}
+{% block content %}
+<h2>Comandas activas</h2>
+<div class="row">
+    {% for comanda in comandas %}
+    <div class="col-md-4 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Comanda #{{ comanda.id }} - Mesa {{ comanda.mesa.numero }}</h5>
+                <p>Estado: <span class="badge bg-warning text-dark">{{ comanda.get_estado_display }}</span></p>
+                <p>Total: ${{ comanda.total }}</p>
+                <form method="post" action="{% url 'cambiar_estado' comanda.id %}">
+                    {% csrf_token %}
+                    <select name="estado" class="form-select mb-2">
+                        <option value="PENDIENTE">Pendiente</option>
+                        <option value="PREPARANDO">Preparando</option>
+                        <option value="LISTO">Listo</option>
+                        <option value="ENTREGADO">Entregado</option>
+                        <option value="PAGADO">Pagado</option>
+                    </select>
+                    <button type="submit" class="btn btn-sm btn-primary">Actualizar estado</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <p>No hay comandas activas.</p>
+    {% endfor %}
+</div>
+{% endblock %}

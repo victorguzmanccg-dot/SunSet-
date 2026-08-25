@@ -1,0 +1,11 @@
+{% extends 'mainvista/base.html' %}
+{% block content %}
+<h2>Mi perfil</h2>
+<div class="card" style="max-width: 400px;">
+    <div class="card-body">
+        <p><strong>Usuario:</strong> {{ user.username }}</p>
+        <p><strong>Rol:</strong> {{ rol }}</p>
+        <p><strong>Correo:</strong> {{ user.email|default:"No registrado" }}</p>
+    </div>
+</div>
+{% endblock %}
