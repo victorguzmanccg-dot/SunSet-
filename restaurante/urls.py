@@ -15,6 +15,7 @@ urlpatterns = [
 
     # Rutas Web (HTML)
     path('', views.menu_view, name='menu'),
+    path('platillo/nuevo/', views.crear_platillo_view, name='crear_platillo'),
     path('cocina/', views.cocina_view, name='cocina'),
     path('comanda/nueva/', views.crear_comanda_action, name='crear_comanda'),
     path('comanda/<int:comanda_id>/estado/', views.cambiar_estado_action, name='cambiar_estado'),

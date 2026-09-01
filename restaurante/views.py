@@ -6,6 +6,7 @@ from rest_framework import viewsets
 
 from .models import Mesa, Platillo, Comanda
 from .serializers import MesaSerializer, PlatilloSerializer, ComandaSerializer, ReservaSerializer
+from .forms import PlatilloModelForm
 from .dao.sunsetdao import PlatilloDAO, ComandaDAO, MesaDAO
 
 
@@ -38,13 +39,26 @@ def perfil_view(request):
 
 
 # ==========================================
-# VISTAS WEB (HTML) - Menú (Lectura)
+# VISTAS WEB (HTML) - Menú (Lectura) y Platillos (Altas vía ModelForm)
 # ==========================================
 
 @login_required
 def menu_view(request):
     platillos = PlatilloDAO.listar_disponibles()
     return render(request, 'mainvista/menu.html', {'platillos': platillos})
+
+
+@login_required
+def crear_platillo_view(request):
+    if request.method == 'POST':
+        form = PlatilloModelForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Platillo agregado correctamente.')
+            return redirect('menu')
+    else:
+        form = PlatilloModelForm()
+    return render(request, 'mainvista/platillo_form.html', {'form': form})
 
 
 # ==========================================

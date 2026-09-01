@@ -1,6 +1,7 @@
 {% extends 'mainvista/base.html' %}
 {% block content %}
 <h2>Menú SunSet</h2>
+<a href="{% url 'crear_platillo' %}" class="btn btn-success mb-3">+ Agregar Platillo</a>
 <div class="row">
     {% for platillo in platillos %}
     <div class="col-md-4 mb-3">
