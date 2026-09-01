@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from rest_framework import viewsets
@@ -8,6 +8,20 @@ from .models import Mesa, Platillo, Comanda
 from .serializers import MesaSerializer, PlatilloSerializer, ComandaSerializer, ReservaSerializer
 from .forms import PlatilloModelForm
 from .dao.sunsetdao import PlatilloDAO, ComandaDAO, MesaDAO
+
+
+# ==========================================
+# CONTROL DE ACCESO POR GRUPOS DE DJANGO
+# ==========================================
+# Capa adicional de RBAC sobre PerfilUsuario: los grupos "Operador" y
+# "Administrador" deben crearse desde el admin de Django (/admin/auth/group/)
+# y asignarse a los usuarios correspondientes.
+
+def es_operador_o_admin(user):
+    return user.is_authenticated and (
+        user.groups.filter(name__in=['Operador', 'Administrador']).exists()
+        or user.is_staff
+    )
 
 
 # ==========================================
@@ -49,6 +63,7 @@ def menu_view(request):
 
 
 @login_required
+@user_passes_test(es_operador_o_admin, login_url='/admin/login/')
 def crear_platillo_view(request):
     if request.method == 'POST':
         form = PlatilloModelForm(request.POST, request.FILES)
@@ -66,12 +81,14 @@ def crear_platillo_view(request):
 # ==========================================
 
 @login_required
+@user_passes_test(es_operador_o_admin, login_url='/admin/login/')
 def cocina_view(request):
     comandas = ComandaDAO.listar_activas()
     return render(request, 'mainvista/cocina.html', {'comandas': comandas})
 
 
 @login_required
+@user_passes_test(es_operador_o_admin, login_url='/admin/login/')
 def crear_comanda_action(request):
     if request.method == 'POST':
         mesa_id = request.POST.get('mesa_id')
@@ -81,6 +98,7 @@ def crear_comanda_action(request):
 
 
 @login_required
+@user_passes_test(es_operador_o_admin, login_url='/admin/login/')
 def cambiar_estado_action(request, comanda_id):
     if request.method == 'POST':
         nuevo_estado = request.POST.get('estado')

@@ -1,0 +1,16 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block content %}
+<p>{% translate "Selecciona un archivo CSV con columnas: nombre, precio, categoria, descripcion, disponible." %}</p>
+
+<form action="." method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="{% translate 'Importar' %}" class="default">
+</form>
+
+<p>
+    <a href="../">{% translate "Volver al listado de platillos" %}</a>
+</p>
+{% endblock %}
