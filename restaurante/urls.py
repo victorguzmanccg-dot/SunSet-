@@ -19,6 +19,7 @@ urlpatterns = [
     path('cocina/', views.cocina_view, name='cocina'),
     path('comanda/nueva/', views.crear_comanda_action, name='crear_comanda'),
     path('comanda/<int:comanda_id>/estado/', views.cambiar_estado_action, name='cambiar_estado'),
+    path('menu/agregar/', views.agregar_al_menu_action, name='agregar_al_menu'),
 
     # Rutas API
     path('', include(router.urls)),

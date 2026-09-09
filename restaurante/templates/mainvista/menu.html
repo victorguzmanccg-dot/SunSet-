@@ -6,11 +6,25 @@
     {% for platillo in platillos %}
     <div class="col-md-4 mb-3">
         <div class="card">
+            {% if platillo.imagen %}
+                <img src="{{ platillo.imagen.url }}" class="card-img-top" style="height: 180px; object-fit: cover;">
+            {% endif %}
             <div class="card-body">
                 <h5 class="card-title">{{ platillo.nombre }}</h5>
                 <p class="card-text">{{ platillo.descripcion }}</p>
                 <p class="fw-bold">${{ platillo.precio }}</p>
-                <span class="badge bg-secondary">{{ platillo.get_categoria_display }}</span>
+                <span class="badge bg-secondary mb-2">{{ platillo.get_categoria_display }}</span>
+
+                {% if user.is_authenticated %}
+                <form action="{% url 'agregar_al_menu' %}" method="POST" class="mt-2">
+                    {% csrf_token %}
+                    <input type="hidden" name="platillo_id" value="{{ platillo.id }}">
+                    <div class="input-group input-group-sm">
+                        <input type="number" name="mesa_numero" class="form-control" placeholder="N° mesa" min="1" required>
+                        <button type="submit" class="btn btn-primary">Agregar a comanda</button>
+                    </div>
+                </form>
+                {% endif %}
             </div>
         </div>
     </div>

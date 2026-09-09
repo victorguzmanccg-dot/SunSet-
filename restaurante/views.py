@@ -75,6 +75,27 @@ def crear_platillo_view(request):
         form = PlatilloModelForm()
     return render(request, 'mainvista/platillo_form.html', {'form': form})
 
+@login_required
+@user_passes_test(es_operador_o_admin, login_url='/admin/login/')
+def agregar_al_menu_action(request):
+    """Agrega un platillo directo desde el menú a una comanda de una mesa dada."""
+    if request.method == 'POST':
+        platillo_id = request.POST.get('platillo_id')
+        mesa_numero = request.POST.get('mesa_numero')
+
+        mesa = MesaDAO.obtener(mesa_numero) if mesa_numero and mesa_numero.isdigit() else None
+        if not mesa:
+            mesa, _ = Mesa.objects.get_or_create(numero=mesa_numero or 1, defaults={'capacidad': 4})
+
+        comanda = ComandaDAO.listar_activas().filter(mesa=mesa).first()
+        if not comanda:
+            comanda = ComandaDAO.crear(mesa_id=mesa.id, mesero=request.user)
+
+        ComandaDAO.agregar_platillo(comanda.id, platillo_id, cantidad=1)
+        messages.success(request, f'Platillo agregado a la comanda de la mesa {mesa.numero}.')
+
+    return redirect('menu')
+
 
 # ==========================================
 # VISTAS WEB (HTML) - Comandas (Altas / Cambios)
